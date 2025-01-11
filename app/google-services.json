@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "484231976950",
+    "project_id": "assigment1-avivit",
+    "storage_bucket": "assigment1-avivit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484231976950:android:45c21d87f0f77340ffd9d7",
+        "android_client_info": {
+          "package_name": "com.example.assimentone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQf0vFx_dUIbfOTcKgWm18qi87AXlM_r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
