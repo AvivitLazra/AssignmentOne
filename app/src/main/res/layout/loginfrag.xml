@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/doglog"
     android:orientation="vertical"
-    tools:context=".fragments.FragmentOne">
+    tools:context=".fragments.loginfrag">
 
     <EditText
         android:id="@+id/EmailAddress"

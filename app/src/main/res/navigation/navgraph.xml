@@ -3,32 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/fragmentOne">
-
+    app:startDestination="@id/loginfrag">
     <fragment
-        android:id="@+id/fragmentOne"
-        android:name="com.example.assimentone.fragments.FragmentOne"
-        android:label="fragment_one"
-        tools:layout="@layout/loginfrag" >
-        <action
-            android:id="@+id/action_fragmentOne_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
-        <action
-            android:id="@+id/action_fragmentOne_to_fragmentTwo"
-            app:destination="@id/fragmentTwo" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragmentTwo"
-        android:name="com.example.assimentone.fragments.FragmentTwo"
-        android:label="fragment_two"
+        android:id="@+id/registerfrag"
+        android:name="com.example.assimentone.fragments.registerfrag"
+        android:label="registerfrag"
         tools:layout="@layout/registerfrag" >
         <action
-            android:id="@+id/action_fragmentTwo_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
+            android:id="@+id/action_registerfrag_to_homefrag"
+            app:destination="@id/homefrag" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentThree"
-        android:name="com.example.assimentone.fragments.FragmentThree"
-        android:label="fragment_three"
+        android:id="@+id/loginfrag"
+        android:name="com.example.assimentone.fragments.loginfrag"
+        android:label="loginfrag"
+        tools:layout="@layout/loginfrag" >
+        <action
+            android:id="@+id/action_loginfrag_to_registerfrag"
+            app:destination="@id/registerfrag" />
+        <action
+            android:id="@+id/action_loginfrag_to_homefrag"
+            app:destination="@id/homefrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/homefrag"
+        android:name="com.example.assimentone.fragments.homefrag"
+        android:label="homefrag"
         tools:layout="@layout/homefrag" />
 </navigation>

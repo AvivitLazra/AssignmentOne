@@ -7,7 +7,7 @@
     android:background="@drawable/bunnyreg"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".fragments.FragmentTwo">
+    tools:context=".fragments.registerfrag">
 
 
     <!-- TODO: Update blank fragment layout -->

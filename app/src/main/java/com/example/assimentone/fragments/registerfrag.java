@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.assimentone.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,15 +19,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import android.widget.EditText;
-import android.widget.Toast;
-
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentOne#newInstance} factory method to
+ * Use the {@link registerfrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentOne extends Fragment {
+public class registerfrag extends Fragment {
     private FirebaseAuth mAuth;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -37,7 +36,7 @@ public class FragmentOne extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public FragmentOne() {
+    public registerfrag() {
         // Required empty public constructor
     }
 
@@ -47,11 +46,11 @@ public class FragmentOne extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentOne.
+     * @return A new instance of fragment registerfrag.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentOne newInstance(String param1, String param2) {
-        FragmentOne fragment = new FragmentOne();
+    public static registerfrag newInstance(String param1, String param2) {
+        registerfrag fragment = new registerfrag();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,45 +66,33 @@ public class FragmentOne extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mAuth = FirebaseAuth.getInstance(); // אתחול FirebaseAuth
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.loginfrag, container, false);
-        Button register=view.findViewById(R.id.registerButton);
+        View view= inflater.inflate(R.layout.registerfrag, container, false);
+        Button register=view.findViewById(R.id.backtoregister);
         register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_fragmentOne_to_fragmentTwo);
-            }
-        });
-        Button login =view.findViewById(R.id.loginButton);
-        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String email = ((EditText) view.findViewById(R.id.EmailAddress)).getText().toString();
                 String password = ((EditText) view.findViewById(R.id.Password)).getText().toString();
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getContext(),"login succeeded",Toast.LENGTH_LONG).show();
-
-                                    Navigation.findNavController(view).navigate(R.id.action_fragmentOne_to_fragmentThree);
+                mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getContext(),"register succeeded ",Toast.LENGTH_LONG).show();
+                                        Navigation.findNavController(view).navigate(R.id.action_registerfrag_to_homefrag);
+                                    } else {
+                                        Toast.makeText(getContext(),"register failed",Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                                else {
-                                    Toast.makeText(getContext(),"login failed",Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-
+                            });
             }
         });
         return view;
