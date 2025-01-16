@@ -11,13 +11,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.assimentone.R;
 import com.example.assimentone.models.Adapter;
 import com.example.assimentone.models.Animal;
 import com.example.assimentone.models.Products;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +42,9 @@ public class homefrag extends Fragment {
     private LinearLayoutManager layoutManager;
     private ArrayList<Animal> productList;
     private Adapter adapter;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("users");
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -94,11 +104,12 @@ public class homefrag extends Fragment {
         }
 
         adapter = new Adapter(productList);
-        Log.d("ItemCollection","set........");
         recyclerView.setAdapter(adapter);
-        Log.d("ItemCollection","Removing...");
 
         return view;
     }
+
+
+
 
 }

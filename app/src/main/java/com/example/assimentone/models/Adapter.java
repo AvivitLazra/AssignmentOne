@@ -1,8 +1,10 @@
 package com.example.assimentone.models;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,11 +13,24 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.assimentone.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     private ArrayList<Animal> productList;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("users");
+
+
+
+
 
 
     public Adapter(ArrayList<Animal> productList){
@@ -26,6 +41,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         TextView textaType;
         TextView textaDesc;
         ImageView aImage;
+        Button addBtn;
+        Button removeBtn;
+        private int amount = 0;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -33,6 +51,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             textaType = itemView.findViewById(R.id.textProductType);
             textaDesc = itemView.findViewById(R.id.textProductDescription);
             aImage = itemView.findViewById(R.id.ProductImage);
+            Button addBtn = itemView.findViewById(R.id.btnAddItem);
+            Button removeBtn = itemView.findViewById(R.id.btnRemoveItem);
+
+
+
         }
 
 
@@ -55,9 +78,46 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         textViewCName.setText(productList.get(position).getaType());
         textViewCDesc.setText(productList.get(position).getaDesc());
         imageCharacterImage.setImageResource(productList.get(position).getaImage());
+        if (holder.addBtn !=null ){
+            holder.addBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    String uid= currentUser.getUid();
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // This method is called once with the initial value and again
+                            // whenever data at this location is updated.
+                            MiniProduct value = dataSnapshot.getValue(MiniProduct.class);
+                            if(value!=null) {
+                                holder.amount = value.getAmount()+1;
+                                value.setAmount(holder.amount);
+                                myRef.child(uid).setValue(value);
+                            }
+                            else{
+                                myRef.child(uid).setValue(new MiniProduct(textViewCName.getText().toString(),1 ));
+                            }
+                            Log.d("tag", "Value is: " + value);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            // Failed to read value
+                            Log.w("tag", "Failed to read value.", error.toException());
+                        }
+                    });
+
+                }
+            });
+        }
+
 
     }
 
     @Override
     public int getItemCount() {return productList.size();}
+
+
 }
