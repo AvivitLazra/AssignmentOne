@@ -9,7 +9,7 @@
         android:id="@+id/fragmentOne"
         android:name="com.example.assimentone.fragments.FragmentOne"
         android:label="fragment_one"
-        tools:layout="@layout/fragment_one" >
+        tools:layout="@layout/loginfrag" >
         <action
             android:id="@+id/action_fragmentOne_to_fragmentThree"
             app:destination="@id/fragmentThree" />
@@ -21,7 +21,7 @@
         android:id="@+id/fragmentTwo"
         android:name="com.example.assimentone.fragments.FragmentTwo"
         android:label="fragment_two"
-        tools:layout="@layout/fragment_two" >
+        tools:layout="@layout/registerfrag" >
         <action
             android:id="@+id/action_fragmentTwo_to_fragmentThree"
             app:destination="@id/fragmentThree" />
@@ -30,5 +30,5 @@
         android:id="@+id/fragmentThree"
         android:name="com.example.assimentone.fragments.FragmentThree"
         android:label="fragment_three"
-        tools:layout="@layout/fragment_three" />
+        tools:layout="@layout/homefrag" />
 </navigation>

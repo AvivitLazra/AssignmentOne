@@ -72,7 +72,7 @@ public class FragmentTwo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_two, container, false);
+        View view= inflater.inflate(R.layout.registerfrag, container, false);
         Button register=view.findViewById(R.id.backtoregister);
         register.setOnClickListener(new View.OnClickListener() {
             @Override

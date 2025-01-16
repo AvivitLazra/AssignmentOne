@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backroundone"
+    android:background="@drawable/doglog"
     android:orientation="vertical"
     tools:context=".fragments.FragmentOne">
 
@@ -15,9 +15,9 @@
         android:hint="Enter your email address"
         android:inputType="textEmailAddress"
         android:padding="8dp"
-        android:textSize="24sp"
         android:textColor="#FFFFFF"
-        android:textColorHint="#DDDDDD"/>
+        android:textColorHint="#DDDDDD"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/Password"
@@ -25,11 +25,12 @@
         android:layout_height="48dp"
         android:ems="10"
         android:hint="Enter your password"
+        android:inputType="textPassword"
         android:padding="8dp"
-        android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:textColorHint="#DDDDDD"
-        android:inputType="textPassword" />
+        android:textSize="24sp" />
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
