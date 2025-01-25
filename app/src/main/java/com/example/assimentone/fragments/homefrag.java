@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.assimentone.R;
 import com.example.assimentone.models.Adapter;
 import com.example.assimentone.models.Animal;
+import com.example.assimentone.models.MiniProduct;
 import com.example.assimentone.models.Products;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +25,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 
 
@@ -31,7 +38,9 @@ import java.util.ArrayList;
  * Use the {@link homefrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class homefrag extends Fragment {
+
+// Implementing Adapter.OnCardClickListener to gain capabilities of the interface listener we wrote in the adapter class.
+public class homefrag extends Fragment implements Adapter.OnCardClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,7 +101,7 @@ public class homefrag extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         productList = new ArrayList<Animal>();
-
+        //Generating products list for RecycleView Items
         for(int i = 0; i< Products.productTypes.length; i++){
             Log.d("ItemCollection","Collecting items...");
             productList.add(new Animal(
@@ -102,12 +111,58 @@ public class homefrag extends Fragment {
 
             ));
         }
-
-        adapter = new Adapter(productList);
+        // Since we implement the listener, we set this as the listener of the adapter.
+        adapter = new Adapter(productList,this);
         recyclerView.setAdapter(adapter);
 
         return view;
     }
+
+    @Override public void onCardButtonClick(MiniProduct product) {
+        //Getting firebase reference and getting user instance
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid= currentUser.getUid();
+        ArrayList<MiniProduct> userProducts = new ArrayList<>();
+        DatabaseReference myRefUser = myRef.child(uid);
+        //Firebase plug and play code for getting information from the database, making decisions if
+        // to create a new item on the database or increment it.
+        myRefUser.addListenerForSingleValueEvent (new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+
+                //Trying to obtain object from firebase if exists
+                MiniProduct value = dataSnapshot.getValue(MiniProduct.class);
+                if(value!=null) {
+                    //if it exists, we increment its value and override the object in the firebase
+                    value.setAmount(value.getAmount() + 1);
+                    myRef.child(uid).setValue(value);
+                    Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
+                    Log.d("Success", "Product amount updated successfully");
+                }
+                else{
+                    myRef.child(uid).setValue(new MiniProduct(product.getaType(), 1));
+                    Toast.makeText(getContext(), "Item added!", Toast.LENGTH_SHORT).show();
+                }
+                Log.d("tag", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("tag", "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+        }
+
+
+
+
 
 
 

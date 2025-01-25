@@ -28,13 +28,17 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("users");
 
+    // This interface serves as onclick listener to define the onclick function to the buttons after inflating them in the activity.
+    public interface OnCardClickListener {
+        void onCardButtonClick(MiniProduct product);
+    }
+
+    private OnCardClickListener listener;
 
 
-
-
-
-    public Adapter(ArrayList<Animal> productList){
+    public Adapter(ArrayList<Animal> productList, OnCardClickListener listener){
         this.productList=productList;
+        this.listener= listener; //Setting the onclickListener for the button
     }
     public class MyViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
@@ -51,8 +55,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             textaType = itemView.findViewById(R.id.textProductType);
             textaDesc = itemView.findViewById(R.id.textProductDescription);
             aImage = itemView.findViewById(R.id.ProductImage);
-            Button addBtn = itemView.findViewById(R.id.btnAddItem);
-            Button removeBtn = itemView.findViewById(R.id.btnRemoveItem);
+            addBtn = itemView.findViewById(R.id.btnAddItem);
+            removeBtn = itemView.findViewById(R.id.btnRemoveItem);
 
 
 
@@ -74,47 +78,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         TextView textViewCName = holder.textaType;
         TextView textViewCDesc = holder.textaDesc;
         ImageView imageCharacterImage = holder.aImage;
+        Button addBtn = holder.addBtn;
 
         textViewCName.setText(productList.get(position).getaType());
         textViewCDesc.setText(productList.get(position).getaDesc());
         imageCharacterImage.setImageResource(productList.get(position).getaImage());
-        if (holder.addBtn !=null ){
-            holder.addBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-                    String uid= currentUser.getUid();
-                    myRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            // This method is called once with the initial value and again
-                            // whenever data at this location is updated.
-                            MiniProduct value = dataSnapshot.getValue(MiniProduct.class);
-                            if(value!=null) {
-                                holder.amount = value.getAmount()+1;
-                                value.setAmount(holder.amount);
-                                myRef.child(uid).setValue(value);
-                            }
-                            else{
-                                myRef.child(uid).setValue(new MiniProduct(textViewCName.getText().toString(),1 ));
-                            }
-                            Log.d("tag", "Value is: " + value);
-                        }
+        addBtn.setOnClickListener(v -> {
+            if (listener != null){
+                MiniProduct miniProduct = new MiniProduct(productList.get(position).getaType(), 1);
+                listener.onCardButtonClick(miniProduct);
+            }
+        });
 
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-                            // Failed to read value
-                            Log.w("tag", "Failed to read value.", error.toException());
-                        }
-                    });
-
-                }
-            });
-        }
-
-
-    }
+   }
 
     @Override
     public int getItemCount() {return productList.size();}

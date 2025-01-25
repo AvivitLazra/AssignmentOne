@@ -10,6 +10,11 @@ public class MiniProduct
         this.amount = amount;
     }
 
+    public MiniProduct(){
+        this.aType="dummy";
+        this.amount=-1;
+    }
+
     public String getaType() {
         return aType;
     }
