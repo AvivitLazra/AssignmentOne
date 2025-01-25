@@ -51,8 +51,12 @@ public class homefrag extends Fragment implements Adapter.OnCardClickListener{
     private LinearLayoutManager layoutManager;
     private ArrayList<Animal> productList;
     private Adapter adapter;
+    private TextView textUserGreeting;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("users");
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
     // TODO: Rename and change types of parameters
@@ -101,6 +105,7 @@ public class homefrag extends Fragment implements Adapter.OnCardClickListener{
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         productList = new ArrayList<Animal>();
+        textUserGreeting = view.findViewById(R.id.TextHomeUserGreeting);
         //Generating products list for RecycleView Items
         for(int i = 0; i< Products.productTypes.length; i++){
             Log.d("ItemCollection","Collecting items...");
@@ -114,14 +119,15 @@ public class homefrag extends Fragment implements Adapter.OnCardClickListener{
         // Since we implement the listener, we set this as the listener of the adapter.
         adapter = new Adapter(productList,this);
         recyclerView.setAdapter(adapter);
+        Log.d("TEST", "THE EMAIL IS " + currentUser.getEmail());
+        textUserGreeting.setText("Hello " + currentUser.getEmail().split("@")[0]);
+
 
         return view;
     }
     @Override
     public void onCardButtonClick(MiniProduct product, int value, View cardView) {
         // Getting Firebase reference and user instance
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         String uid = currentUser.getUid();
         DatabaseReference myRefUser = myRef.child(uid).child("products");
 
