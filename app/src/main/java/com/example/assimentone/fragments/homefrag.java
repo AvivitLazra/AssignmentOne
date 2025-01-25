@@ -117,36 +117,62 @@ public class homefrag extends Fragment implements Adapter.OnCardClickListener{
 
         return view;
     }
-
-    @Override public void onCardButtonClick(MiniProduct product) {
-        //Getting firebase reference and getting user instance
+    @Override
+    public void onCardButtonClick(MiniProduct product, int value, View cardView) {
+        // Getting Firebase reference and user instance
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid= currentUser.getUid();
-        ArrayList<MiniProduct> userProducts = new ArrayList<>();
-        DatabaseReference myRefUser = myRef.child(uid);
-        //Firebase plug and play code for getting information from the database, making decisions if
-        // to create a new item on the database or increment it.
-        myRefUser.addListenerForSingleValueEvent (new ValueEventListener() {
+        String uid = currentUser.getUid();
+        DatabaseReference myRefUser = myRef.child(uid).child("products");
+
+        // Read all user's products and check if the selected product exists in the list
+        myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
+                boolean productExists = false;
+                //Amount textbox
+                TextView textAmount = (TextView) cardView.findViewById(R.id.amountTextBox);
+                // for every item in users's product list
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //Bring a value from the products list of the given user.
+                    MiniProduct existingProduct = snapshot.getValue(MiniProduct.class);
 
-                //Trying to obtain object from firebase if exists
-                MiniProduct value = dataSnapshot.getValue(MiniProduct.class);
-                if(value!=null) {
-                    //if it exists, we increment its value and override the object in the firebase
-                    value.setAmount(value.getAmount() + 1);
-                    myRef.child(uid).setValue(value);
-                    Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
-                    Log.d("Success", "Product amount updated successfully");
+                    if (existingProduct != null && existingProduct.getaType().equals(product.getaType())) {
+                        // Product exists, increment its amount
+                        if(!(existingProduct.getAmount()<=0) || !(value == -1)){
+                            existingProduct.setAmount(existingProduct.getAmount() + value);
+                            textAmount.setText(String.format("%d",existingProduct.getAmount()));
+                        }
+
+                        else
+                            Toast.makeText(getContext(), "Item can't be removed under amount of zero", Toast.LENGTH_SHORT).show();
+
+                        // chatgpt generated, remove later...
+                        snapshot.getRef().setValue(existingProduct);
+//                                .addOnSuccessListener(aVoid ->
+//                                        Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show())
+//                                .addOnFailureListener(e ->
+//                                        Toast.makeText(getContext(), "Update failed!", Toast.LENGTH_SHORT).show());
+
+                        Log.d("Success", "Product amount updated successfully");
+                        productExists = true;
+                        break;
+                    }
                 }
-                else{
-                    myRef.child(uid).setValue(new MiniProduct(product.getaType(), 1));
-                    Toast.makeText(getContext(), "Item added!", Toast.LENGTH_SHORT).show();
+                //After checking all the items in the list, we check if we discovered the item or not with the flag
+
+                // If product does not exist, add it to the list
+                if (!productExists) {
+                    myRefUser.push().setValue(new MiniProduct(product.getaType(), 0));
+                    textAmount.setText("0");
+                            // chatgpt generated, remove later...
+//                            .addOnSuccessListener(aVoid ->
+//                                    Toast.makeText(getContext(), "Item added!", Toast.LENGTH_SHORT).show())
+//                            .addOnFailureListener(e ->
+//                                    Toast.makeText(getContext(), "Addition failed!", Toast.LENGTH_SHORT).show());
+
+                    Log.d("Success", "New product added successfully");
                 }
-                Log.d("tag", "Value is: " + value);
             }
 
             @Override

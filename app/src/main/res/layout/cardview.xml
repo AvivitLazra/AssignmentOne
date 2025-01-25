@@ -75,7 +75,7 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:id="@+id/smallTextBox"
+                    android:id="@+id/amountTextBox"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginEnd="4dp"

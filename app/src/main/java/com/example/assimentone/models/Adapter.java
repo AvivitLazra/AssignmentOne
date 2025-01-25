@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -30,7 +31,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     // This interface serves as onclick listener to define the onclick function to the buttons after inflating them in the activity.
     public interface OnCardClickListener {
-        void onCardButtonClick(MiniProduct product);
+        void onCardButtonClick(MiniProduct product, int value, View view);
     }
 
     private OnCardClickListener listener;
@@ -47,13 +48,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         ImageView aImage;
         Button addBtn;
         Button removeBtn;
-        private int amount = 0;
+        TextView textAmount;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.CardLayoutRes);
             textaType = itemView.findViewById(R.id.textProductType);
             textaDesc = itemView.findViewById(R.id.textProductDescription);
+            textAmount = itemView.findViewById(R.id.amountTextBox);
             aImage = itemView.findViewById(R.id.ProductImage);
             addBtn = itemView.findViewById(R.id.btnAddItem);
             removeBtn = itemView.findViewById(R.id.btnRemoveItem);
@@ -79,6 +81,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         TextView textViewCDesc = holder.textaDesc;
         ImageView imageCharacterImage = holder.aImage;
         Button addBtn = holder.addBtn;
+        Button removeBtn = holder.removeBtn;
 
         textViewCName.setText(productList.get(position).getaType());
         textViewCDesc.setText(productList.get(position).getaDesc());
@@ -86,9 +89,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         addBtn.setOnClickListener(v -> {
             if (listener != null){
                 MiniProduct miniProduct = new MiniProduct(productList.get(position).getaType(), 1);
-                listener.onCardButtonClick(miniProduct);
+                listener.onCardButtonClick(miniProduct, 1, holder.itemView);
             }
         });
+        removeBtn.setOnClickListener(v -> {
+            if (listener != null){
+                MiniProduct miniProduct = new MiniProduct(productList.get(position).getaType(), 1);
+                listener.onCardButtonClick(miniProduct, -1, holder.itemView);
+
+            }
+        });
+        MiniProduct miniProduct = new MiniProduct(productList.get(position).getaType(), 0);
+        listener.onCardButtonClick(miniProduct, 0, holder.itemView);
+
 
    }
 
